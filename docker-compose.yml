@@ -1,0 +1,7 @@
+version: '3'
+services:
+  lucas-lambda:
+    build:
+      context: .
+    volumes:
+      - .:/go/src/github.com/lucasrenan/lucas-aws-lambda

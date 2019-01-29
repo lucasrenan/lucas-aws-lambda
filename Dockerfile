@@ -5,7 +5,7 @@ ENV GOPATH /go
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -y nodejs npm \
  && npm install -g serverless \
- && go get github.com/golang/dep
+ && go get -u github.com/golang/dep/cmd/dep
 
 RUN mkdir -p /go/src/github.com/lucasrenan/lucas-aws-lambda
 

@@ -5,3 +5,11 @@ services:
       context: .
     volumes:
       - .:/go/src/github.com/lucasrenan/lucas-aws-lambda
+  lucas-node:
+    build:
+      context: .
+    command: ["nodejs", "server.js"]
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/go/src/github.com/lucasrenan/lucas-aws-lambda

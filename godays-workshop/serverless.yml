@@ -41,10 +41,22 @@ provider:
 #          - - "arn:aws:s3:::"
 #            - "Ref" : "ServerlessDeploymentBucket"
 #            - "/*"
+  iamRoleStatements:
+    -  Effect: "Allow"
+       Action:
+         - "dynamodb:PutItem"
+         - "dynamodb:GetItem"
+       Resource:
+         Fn::GetAtt:
+           - DynamoDBTable
+           - Arn
 
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
+  environment: # Service wide environment variables
+    DYNAMO_DB_TABLE:
+      Ref: DynamoDBTable # References resource by name
 
 package:
  exclude:
@@ -69,6 +81,22 @@ functions:
       - http:
           path: world
           method: get
+  get-url:
+    handler: bin/get-url
+    events:
+      - http:
+          path: /{short_url}
+          method: get
+          request:
+            parameters:
+              paths:
+                short_url: true
+  create-url:
+    handler: bin/create-url
+    events:
+      - http:
+          path: /create-url
+          method: post
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -115,3 +143,18 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+resources:
+  Resources:
+    DynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: godays-url-shortener
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: "1"
+          WriteCapacityUnits: "1"
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
